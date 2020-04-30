@@ -142,26 +142,29 @@ clear StrInfor
 %
 % get the coordinate
 %
-nodeRadius=sqrt((nodeInfor(:,2)-gapX).^2+(nodeInfor(:,3)-gapY).^2);   % radical coordination of nodes
-elemCenLocation=1/4*[(nodeInfor(elemInfor(:,2),2)+nodeInfor(elemInfor(:,3),2)...
-    +nodeInfor(elemInfor(:,4),2)+nodeInfor(elemInfor(:,5),2)), ...
-    (nodeInfor(elemInfor(:,2),3)+nodeInfor(elemInfor(:,3),3)+...
-    nodeInfor(elemInfor(:,4),3)+nodeInfor(elemInfor(:,5),3))];  % radical coordination of elements
-
-%
-% modify thickness of the plate element
-%
-elemRadius=sqrt(elemCenLocation(:,1).^2+elemCenLocation(:,2).^2);
-[BHnode,rowtemp]=find(nodeRadius<=R1);
-[Bottonnode,rowtemp]=find(nodeRadius<=R2);
-if dampSwitch
-    [Dampelement,rowtemp]=find(elemRadius<=Rd);
-end
-% >>>>>>>>> modify the thickness (according to the given function )>>>>>>>>
 TopZCoord=h*ones(numNode,1);
-p1=(h-0.2)/((R1-R2)^2);
-TopZCoord(BHnode)=p1*(nodeRadius(BHnode)-R2).^2+0.2;
-TopZCoord(Bottonnode)=0.2;
+for 
+    nodeRadius=sqrt((nodeInfor(:,2)-gapX).^2+(nodeInfor(:,3)-gapY).^2);   % radical coordination of nodes
+    elemCenLocation=1/4*[(nodeInfor(elemInfor(:,2),2)+nodeInfor(elemInfor(:,3),2)...
+        +nodeInfor(elemInfor(:,4),2)+nodeInfor(elemInfor(:,5),2)), ...
+        (nodeInfor(elemInfor(:,2),3)+nodeInfor(elemInfor(:,3),3)+...
+        nodeInfor(elemInfor(:,4),3)+nodeInfor(elemInfor(:,5),3))];  % radical coordination of elements
+
+    %
+    % modify thickness of the plate element
+    %
+    elemRadius=sqrt(elemCenLocation(:,1).^2+elemCenLocation(:,2).^2);
+    [BHnode,rowtemp]=find(nodeRadius<=R1);
+    [Bottonnode,rowtemp]=find(nodeRadius<=R2);
+    if dampSwitch
+        [Dampelement,rowtemp]=find(elemRadius<=Rd);
+    end
+    % >>>>>>>>> modify the thickness (according to the given function )>>>>>>>>
+    
+    p1=(h-0.2)/((R1-R2)^2);
+    TopZCoord(BHnode)=p1*(nodeRadius(BHnode)-R2).^2+0.2;
+    TopZCoord(Bottonnode)=0.2;
+end
 % >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 if strcmp(elemType,'Shell')
     % shell element S4R
